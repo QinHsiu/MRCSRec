@@ -1,0 +1,1 @@
+from recbole.model.sequential_recommender.mrcsrec import MRCSRec
