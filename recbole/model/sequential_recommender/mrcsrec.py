@@ -121,16 +121,8 @@ class MRCSRec(SequentialRecommender):
         return extended_attention_mask
 
     def meta_contrast(self, sequence,sequence_output_0, sequence_output_1,meta_regular,target_id):
-        """
-        :param sequence_output_0:original seq1
-        :param sequence_output_1: original seq2
-        :param meta_aug: [aug_1,aug_2]
-        :param mode: "step1 ,2, 3"
-        :return:
-        """
         batch_size = sequence_output_0.shape[0]
-        # embedding
-        # e_s_0=self.item_embedding(sequence)[:,-1,:]
+   
         e_s_0=sequence
         # meta regular
         m_r_0 = meta_regular(e_s_0)
@@ -138,10 +130,7 @@ class MRCSRec(SequentialRecommender):
         # result
         s_1_0 = torch.mul(m_r_0,sequence_output_0)
         s_2_0 = torch.mul(m_r_0,sequence_output_1)
-
-        # s_1_0 = torch.add(m_r_0, sequence_output_0)
-        # s_2_0 = torch.add(m_r_0, sequence_output_1)
-
+        
         logits, label = self.info_nce(s_1_0, sequence_output_1, self.tau, batch_size, self.sim,target_id)
         cl_loss = nn.CrossEntropyLoss()(logits, label)
 
